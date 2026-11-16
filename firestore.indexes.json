@@ -1,0 +1,42 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "setLogs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "variantId", "order": "ASCENDING" },
+        { "fieldPath": "loggedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "habitChecks",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "habitId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "workoutSessions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "optInLeaderboard", "order": "ASCENDING" },
+        { "fieldPath": "totalVolumeKg", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "userId", "order": "ASCENDING" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#05080f" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="manifest" href="manifest.json" />
+    <title>智慧健身 PWA</title>
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/charts.css" />
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; min-height: 100dvh; font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+        color: #d7f9ff; background: radial-gradient(1200px 600px at 10% -10%, rgba(0, 255, 209, 0.12), transparent 55%), radial-gradient(800px 400px at 100% 0%, rgba(0, 140, 255, 0.14), transparent 50%), linear-gradient(180deg, #05080f 0%, #070b14 100%);
+      }
+      body::before {
+        content: ""; position: fixed; inset: 0; pointer-events: none;
+        background-image: linear-gradient(rgba(0, 255, 209, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 209, 0.04) 1px, transparent 1px);
+        background-size: 28px 28px;
+      }
+      .login-screen { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; background: rgba(5, 8, 15, 0.98); backdrop-filter: blur(18px); }
+      .login-panel { width: min(100%, 440px); padding: 40px; border: 1px solid rgba(173, 255, 237, 0.2); border-radius: 12px; background: linear-gradient(145deg, rgba(20, 34, 42, 0.8), rgba(9, 15, 25, 0.8)); text-align: center; box-shadow: 0 32px 80px rgba(0,0,0,0.5); }
+      .login-status { min-height: 1.5em; color: #ffc0a8; font-size: 0.9rem; line-height: 1.5; }
+      .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid rgba(0, 255, 209, 0.18); background: rgba(5, 8, 15, 0.82); backdrop-filter: blur(10px); }
+      .google-login { display: flex; width: 100%; min-height: 54px; align-items: center; justify-content: center; gap: 12px; border-radius: 8px; background: #f5f8fa; color: #182129; font-weight: 700; cursor: pointer; border: none; }
+
+      /* 下拉選單與加號按鈕樣式 */
+      .exercise-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+      .btn-add-exercise {
+        width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--primary);
+        background: rgba(0, 255, 209, 0.15); color: var(--primary);
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 1.2rem; line-height: 1; transition: all 0.2s;
+      }
+      .btn-add-exercise:hover { background: var(--primary); color: #05080f; }
+
+      #exercise-select {
+        width: 100%; padding: 12px; background: #0b1220; color: #d7f9ff;
+        border: 1px solid rgba(0, 255, 209, 0.3); border-radius: 12px;
+        font-size: 1rem; margin-bottom: 15px; appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300ffd1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 12px center;
+      }
+
+      /* Modal 彈窗樣式 */
+      .modal { position: fixed; inset: 0; z-index: 2000; display: none; place-items: center; padding: 20px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); }
+      .modal.is-visible { display: grid; }
+      .modal-content { width: min(100%, 380px); background: #0b1220; border: 1px solid var(--primary); border-radius: 16px; padding: 24px; box-shadow: 0 0 40px rgba(0,255,209,0.2); }
+      .modal-header { margin-bottom: 20px; color: var(--primary); font-size: 1.2rem; font-weight: 700; text-align: left; }
+      .modal-field { margin-bottom: 16px; display: grid; gap: 8px; text-align: left; }
+      .modal-field label { font-size: 0.85rem; color: #7f93a8; }
+      .modal-field input, .modal-field select { padding: 12px; background: #05080f; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; width: 100%; font-family: inherit; }
+      .modal-actions { display: flex; gap: 12px; margin-top: 10px; }
+      .modal-btn { flex: 1; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 700; border: none; font-family: inherit; }
+      .modal-btn--primary { background: var(--primary); color: #05080f; }
+      .modal-btn--secondary { background: rgba(255,255,255,0.1); color: white; }
+
+      /* 計時器控制項樣式 */
+      .timer-controls { margin-top: 15px; display: flex; gap: 10px; justify-content: center; align-items: center; }
+      .timer-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--primary); background: rgba(0, 255, 209, 0.1); color: var(--primary); cursor: pointer; font-size: 0.85rem; min-width: 60px; }
+      .timer-btn:active { transform: scale(0.95); }
+      #timer-input { width: 60px; background: #000; color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; padding: 6px; text-align: center; font-family: inherit; }
+    </style>
+  </head>
+  <body>
+    <section class="login-screen" id="login-screen">
+      <div class="login-panel">
+        <div style="display:inline-grid; width:58px; aspect-ratio:1; place-items:center; border:1px solid rgba(0,255,209,0.46); border-radius:18px 5px; color:#00ffd1; font-weight:800; font-size:1.4rem;">VF</div>
+        <h1 style="margin: 10px 0;">回到你的訓練節奏</h1>
+        <div class="connection-status" data-connection-status data-connection-state="online" role="status" aria-live="polite">
+          <span class="connection-status__dot" aria-hidden="true"></span>
+          <span data-connection-label>線上</span>
+        </div>
+        <button class="google-login" id="google-login">使用 Google 帳號登入</button>
+        <p class="login-status" id="login-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <div class="shell" id="app-shell" hidden>
+      <header class="topbar">
+        <div class="brand" style="color:#7fffd4; letter-spacing:0.15em;">VIBE FITNESS</div>
+        <div style="display: flex; align-items: center; gap: 12px">
+          <div class="connection-status" data-connection-status data-connection-state="online" role="status" aria-live="polite">
+            <span class="connection-status__dot" aria-hidden="true"></span>
+            <span data-connection-label>線上</span>
+          </div>
+          <button id="btn-bell" title="開啟通知">🔔</button>
+          <button class="sign-out" id="sign-out" style="padding: 7px 12px; border: 1px solid rgba(255, 119, 72, 0.4); border-radius: 6px; background: rgba(255, 119, 72, 0.08); color: #ffc0a8; cursor: pointer;">登出</button>
+        </div>
+      </header>
+
+      <main id="app">
+        <div data-app-view="today" data-today-view></div>
+
+        <!-- 訓練視圖 -->
+        <section class="workout-log" data-app-view="workout" hidden>
+          <div class="timer-section" style="text-align: center; margin-bottom: 20px;">
+            <div class="rest-timer" role="timer" id="rest-timer" style="--timer-progress: 1; margin: 0 auto;">
+              <div class="rest-timer__face">
+                <span class="rest-timer__label">Rest</span>
+                <time class="rest-timer__time" id="timer-display">01:00</time>
+              </div>
+            </div>
+            <div class="timer-controls">
+              <input type="number" id="timer-input" value="60" min="1" title="秒數" />
+              <button type="button" id="btn-timer-start" class="timer-btn">開始</button>
+              <button type="button" id="btn-timer-pause" class="timer-btn">暫停</button>
+              <button type="button" id="btn-timer-reset" class="timer-btn">重設</button>
+            </div>
+          </div>
+
+          <article class="set-row" data-set-row>
+            <div class="exercise-header">
+               <div class="set-row__index">動作與紀錄</div>
+               <button type="button" id="btn-open-modal" class="btn-add-exercise" title="新增動作">+</button>
+            </div>
+
+            <select id="exercise-select">
+              <option value="槓鈴臥推" data-muscle="胸">槓鈴臥推 (Bench Press)</option>
+              <option value="傳統硬舉" data-muscle="腿">傳統硬舉 (Deadlift)</option>
+              <option value="頸後深蹲" data-muscle="腿">頸後深蹲 (Back Squat)</option>
+              <option value="引體向上" data-muscle="背">引體向上 (Pull-up)</option>
+              <option value="啞鈴側平舉" data-muscle="肩">啞鈴側平舉 (Lateral Raise)</option>
+            </select>
+
+            <div class="set-row__fields">
+              <label class="set-field">
+                <span class="set-field__label">重量 kg</span>
+                <input class="set-field__input" data-set-field="weight" type="text" readonly placeholder="—" />
+              </label>
+              <label class="set-field">
+                <span class="set-field__label">次數 reps</span>
+                <input class="set-field__input" data-set-field="reps" type="text" readonly placeholder="—" />
+              </label>
+            </div>
+          </article>
+
+          <div class="numeric-keypad" data-numeric-keypad style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:20px; width:100%;">
+            <button type="button" class="keypad-btn" data-key="1">1</button>
+            <button type="button" class="keypad-btn" data-key="2">2</button>
+            <button type="button" class="keypad-btn" data-key="3">3</button>
+            <button type="button" class="keypad-btn" data-key="4">4</button>
+            <button type="button" class="keypad-btn" data-key="5">5</button>
+            <button type="button" class="keypad-btn" data-key="6">6</button>
+            <button type="button" class="keypad-btn" data-key="7">7</button>
+            <button type="button" class="keypad-btn" data-key="8">8</button>
+            <button type="button" class="keypad-btn" data-key="9">9</button>
+            <button type="button" class="keypad-btn" data-key=".">.</button>
+            <button type="button" class="keypad-btn" data-key="0">0</button>
+            <button type="button" class="keypad-btn" data-key="backspace">←</button>
+          </div>
+        </section>
+
+        <!-- 數據視圖 -->
+        <div data-app-view="plan" data-plan-view hidden></div>
+        <div data-app-view="habits" data-habits-view hidden></div>
+        <div data-app-view="leaderboard" data-leaderboard-view hidden></div>
+      </main>
+
+      <nav class="bottom-nav">
+        <button class="bottom-nav__button is-active" type="button" data-view-target="today">☀️ 今日</button>
+        <button class="bottom-nav__button" type="button" data-view-target="workout">🏋️ 訓練</button>
+        <button class="bottom-nav__button" type="button" data-view-target="plan">📅 計畫</button>
+        <button class="bottom-nav__button" type="button" data-view-target="habits">📊 數據</button>
+        <button class="bottom-nav__button" type="button" data-view-target="leaderboard">🏆 排行</button>
+      </nav>
+    </div>
+
+    <div class="nickname-gate" id="nickname-gate" hidden>
+      <section class="nickname-gate__dialog" role="dialog" aria-modal="true" aria-labelledby="nickname-title" tabindex="-1">
+        <p class="nickname-gate__eyebrow">ATHLETE PROFILE</p>
+        <h1 id="nickname-title">設定你的參賽名稱</h1>
+        <p class="nickname-gate__copy">設定暱稱後即可開始使用 Vibe Fitness。排行榜參賽為自願選擇。</p>
+        <form id="nickname-form">
+          <label class="nickname-gate__field" for="nickname-input">暱稱
+            <input id="nickname-input" name="nickname" type="text" minlength="2" maxlength="24" autocomplete="nickname" required placeholder="2 至 24 個字元" />
+          </label>
+          <label class="nickname-gate__consent" for="leaderboard-opt-in">
+            <input id="leaderboard-opt-in" name="optInLeaderboard" type="checkbox" />
+            <span>我同意將訓練成績加入公開排行榜進行競賽</span>
+          </label>
+          <p class="nickname-gate__error" id="nickname-error" role="alert" aria-live="polite"></p>
+          <button class="nickname-gate__submit" type="submit">儲存並開始</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- 新增動作 Modal -->
+    <div id="exercise-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">新增自定義動作</div>
+        <div class="modal-field">
+          <label for="new-exercise-name">動作名稱</label>
+          <input type="text" id="new-exercise-name" placeholder="請輸入動作名稱">
+        </div>
+        <div class="modal-field">
+          <label for="new-exercise-muscle">主要訓練部位</label>
+          <select id="new-exercise-muscle">
+            <option value="胸">胸</option>
+            <option value="肩">肩</option>
+            <option value="核心">核心</option>
+            <option value="臀">臀</option>
+            <option value="腿">腿</option>
+            <option value="背">背</option>
+            <option value="手臂">手臂</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="btn-save-exercise" class="modal-btn modal-btn--primary">確認新增</button>
+          <button type="button" id="btn-close-modal" class="modal-btn modal-btn--secondary">取消</button>
+        </div>
+      </div>
+    </div>
+
+    <template id="habits-view-template">
+      <section class="habits-view">
+        <h2 style="color:#00ffd1; margin-bottom: 20px;">訓練達成率</h2>
+        <div class="habit-chart"><canvas id="habit-completion-chart"></canvas></div>
+        <section class="habits-dashboard__section">
+          <div class="fitness-calendar__header">
+            <h2>健身日曆</h2>
+            <nav class="fitness-calendar__navigator" aria-label="切換日曆月份">
+              <button type="button" data-calendar-nav="previous" aria-label="上一個月">‹</button>
+              <strong data-calendar-month></strong>
+              <button type="button" data-calendar-nav="next" aria-label="下一個月">›</button>
+            </nav>
+          </div>
+          <div class="fitness-calendar__weekdays" aria-hidden="true">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+          </div>
+          <div class="fitness-calendar__grid" data-calendar-grid role="group" aria-label="每日訓練總重量"></div>
+        </section>
+        <section class="habits-dashboard__section">
+          <div class="workout-history__header">
+            <h2>每日訓練紀錄</h2>
+            <nav class="workout-history__navigator" aria-label="歷史紀錄日期">
+              <button type="button" data-history-nav="previous">◀ 前一天</button>
+              <button type="button" data-history-nav="today" data-history-date></button>
+              <button type="button" data-history-nav="next">後一天 ▶</button>
+            </nav>
+          </div>
+          <div class="workout-history__list" data-workout-history></div>
+        </section>
+        <section class="habits-dashboard__section">
+          <div class="habits-filter-row">
+            <h2>肌群分布</h2>
+            <label class="habits-filter" for="muscle-pie-range">
+              <span>統計區間</span>
+              <select id="muscle-pie-range" data-pie-range>
+                <option value="day">今日 (Day)</option>
+                <option value="week">本週 (Week)</option>
+                <option value="month">本月 (Month)</option>
+                <option value="year">今年 (Year)</option>
+              </select>
+            </label>
+          </div>
+          <div class="muscle-chart"><canvas id="muscle-pie-chart"></canvas></div>
+        </section>
+        <p class="habits-view__status" data-habits-status role="status"></p>
+      </section>
+    </template>
+
+    <script src="js/components/set-row.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script type="module" src="js/views/habits-view.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/offline/status.js"></script>
+  </body>
+</html>

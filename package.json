@@ -1,0 +1,11 @@
+{
+  "name": "vibe-fitness-pwa",
+  "private": true,
+  "description": "智慧健身與習慣追蹤 PWA",
+  "scripts": {
+    "start": "npx --yes serve . -p 4173"
+  },
+  "devDependencies": {
+    "firebase-tools": "^14.0.0"
+  }
+}

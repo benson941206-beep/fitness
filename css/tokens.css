@@ -1,0 +1,9 @@
+:root {
+  --primary: #00ffd1;
+  --bg-dark: #05080f;
+  --surface: rgba(20, 34, 42, 0.78);
+  --border: rgba(173, 255, 237, 0.2);
+  --text-main: #e8fbff;
+  --text-dim: #9db0be;
+  --danger: #ff7748;
+}

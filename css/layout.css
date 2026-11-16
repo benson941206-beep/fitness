@@ -1,0 +1,33 @@
+/* Vibe Fitness 核心佈局 */
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  position: relative;
+}
+
+main#app {
+  flex: 1;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding: 32px 20px calc(112px + env(safe-area-inset-bottom));
+  width: 100%;
+}
+
+.workout-log {
+  width: min(100%, 420px);
+  display: grid;
+  gap: 28px;
+  justify-items: center;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

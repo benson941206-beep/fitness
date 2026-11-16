@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /catalog/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId}/{document=**} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && document != 'leaderboard_contributions'
+        && !document.matches('leaderboard_contributions/.*');
+    }
+
+    match /leaderboard_stats/{bucketId}/entries/{entryId} {
+      allow read: if request.auth != null && resource.data.optInLeaderboard == true;
+      allow write: if false;
+    }
+  }
+}

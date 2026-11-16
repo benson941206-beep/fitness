@@ -1,0 +1,32 @@
+:root {
+  --primary: #00ffd1;
+  --bg-dark: #05080f;
+  --surface: rgba(7, 11, 20, 0.78);
+  --text-main: #d7f9ff;
+  --text-dim: #7f93a8;
+  --accent-blue: #008cff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+  font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+  color: var(--text-main);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(0, 255, 209, 0.12), transparent 55%),
+    radial-gradient(800px 400px at 100% 0%, rgba(0, 140, 255, 0.14), transparent 50%),
+    linear-gradient(180deg, var(--bg-dark) 0%, #070b14 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 255, 209, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 209, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}

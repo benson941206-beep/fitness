@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^Get-Content -Raw 'sw\\.js' \\| node --input-type=module --check; if \\(\\$\\?\\) \\{ Write-Output 'sw\\.js syntax OK' \\}$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

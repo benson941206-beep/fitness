@@ -1,0 +1,32 @@
+[debug] [2026-10-03T15:55:27.513Z] ----------------------------------------------------------------------
+[debug] [2026-10-03T15:55:27.515Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\user\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-10-03T15:55:27.515Z] CLI Version:   15.32.1
+[debug] [2026-10-03T15:55:27.515Z] Platform:      win32
+[debug] [2026-10-03T15:55:27.515Z] Node Version:  v24.21.0
+[debug] [2026-10-03T15:55:27.516Z] Detected Agent: unknown
+[debug] [2026-10-03T15:55:27.516Z] Time:          Sat Oct 03 2026 23:55:27 GMT+0800 (台北標準時間)
+[debug] [2026-10-03T15:55:27.516Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-10-03T15:55:30.430Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-03T15:55:30.430Z] > authorizing via signed-in user (benson941206@gmail.com)
+[debug] [2026-10-03T15:55:30.430Z] [iam] checking project vibe-fitness-pwa for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-10-03T15:55:30.439Z] Checked if tokens are valid: true, expires at: 1791045703285
+[debug] [2026-10-03T15:55:30.439Z] Checked if tokens are valid: true, expires at: 1791045703285
+[debug] [2026-10-03T15:55:30.440Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/vibe-fitness-pwa:testIamPermissions [none]
+[debug] [2026-10-03T15:55:30.440Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/vibe-fitness-pwa:testIamPermissions  x-goog-user-project=vibe-fitness-pwa
+[debug] [2026-10-03T15:55:30.440Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/vibe-fitness-pwa:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-03T15:55:31.369Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/vibe-fitness-pwa:testIamPermissions 400
+[debug] [2026-10-03T15:55:31.369Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/vibe-fitness-pwa:testIamPermissions {"error":{"code":400,"message":"Project 'projects/vibe-fitness-pwa' not found or deleted.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"USER_PROJECT_DENIED","domain":"googleapis.com","metadata":{"containerInfo":"projects/vibe-fitness-pwa","consumer":"projects/vibe-fitness-pwa","service":"cloudresourcemanager.googleapis.com"}}]}}
+[debug] [2026-10-03T15:55:31.369Z] [iam] error while checking permissions, command may fail: Request to https://cloudresourcemanager.googleapis.com/v1/projects/vibe-fitness-pwa:testIamPermissions had HTTP Error: 400, Project 'projects/vibe-fitness-pwa' not found or deleted.
+[debug] [2026-10-03T15:55:31.370Z] Checked if tokens are valid: true, expires at: 1791045703285
+[debug] [2026-10-03T15:55:31.370Z] Checked if tokens are valid: true, expires at: 1791045703285
+[debug] [2026-10-03T15:55:31.370Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/vibe-fitness-pwa [none]
+[debug] [2026-10-03T15:55:31.863Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/vibe-fitness-pwa 403
+[debug] [2026-10-03T15:55:31.863Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/vibe-fitness-pwa {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-10-03T15:55:31.863Z] Request to https://firebase.googleapis.com/v1beta1/projects/vibe-fitness-pwa had HTTP Error: 403, The caller does not have permission
+[debug] [2026-10-03T15:55:31.944Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/vibe-fitness-pwa had HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\user\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\user\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:415:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[error] 
+[error] Error: Failed to get Firebase project vibe-fitness-pwa. Please make sure the project exists and your account has permission to access it.
